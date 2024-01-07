@@ -132,6 +132,7 @@ public partial class MainWindow : Window, IMainView
 			_listBoxInputPdfFiles.Items.Add(anAddedInputPdfListItem);
 		}
 
+		_buttonClearInputPdfFiles.IsEnabled = IsEnabledButtonClearInputPdfFiles();
 		_buttonJoinPdfFiles.IsEnabled = IsEnabledButtonJoinPdfFiles();
 	}
 
@@ -156,10 +157,12 @@ public partial class MainWindow : Window, IMainView
 	{
 		_listBoxInputPdfFiles.Items.Clear();
 
+		_buttonClearInputPdfFiles.IsEnabled = false;
 		_buttonJoinPdfFiles.Content = JoinPdfFilesDefaultButtonText;
 		_buttonJoinPdfFiles.IsEnabled = false;
 	}
 
+	private bool IsEnabledButtonClearInputPdfFiles() => _listBoxInputPdfFiles.ItemCount >= 1;
 	private bool IsEnabledButtonJoinPdfFiles() => _listBoxInputPdfFiles.ItemCount >= 2;
 
 	private IReadOnlyList<string> GetInputPdfFilePaths()
