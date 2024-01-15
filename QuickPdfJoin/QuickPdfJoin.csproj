@@ -7,7 +7,7 @@
 		<Title>Quick PDF Join</Title>
 		<Product>Quick PDF Join</Product>
 		<Copyright>Copyright © Mihnea Rădulescu 2024</Copyright>
-		<AssemblyVersion>1.2024.01.07</AssemblyVersion>
+		<AssemblyVersion>1.2024.01.15</AssemblyVersion>
 		<Version>$(AssemblyVersion)</Version>
 		<PublishSingleFile>true</PublishSingleFile>
 		<SelfContained>true</SelfContained>
