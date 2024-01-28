@@ -3,4 +3,6 @@ Quick PDF Join is a simple application that joins multiple PDF files together.
 
 Quick PDF Join targets .NET 8 on Windows, Linux and macOS.
 
-![Screenshot](https://raw.githubusercontent.com/mihnea-radulescu/quickpdfjoin/main/Screenshot.jpg "Quick PDF Join - Screenshot")
+![Screenshot 1](https://raw.githubusercontent.com/mihnea-radulescu/quickpdfjoin/main/Screenshot-Dark.jpg "Quick PDF Join - Dark Screenshot")
+
+![Screenshot 2](https://raw.githubusercontent.com/mihnea-radulescu/quickpdfjoin/main/Screenshot-Light.jpg "Quick PDF Join - Light Screenshot")
