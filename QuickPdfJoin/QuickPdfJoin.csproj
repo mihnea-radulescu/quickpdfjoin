@@ -4,7 +4,7 @@
 		<ApplicationIcon>ApplicationIcon.ico</ApplicationIcon>
 		<Title>Quick PDF Join</Title>
 		<Product>Quick PDF Join</Product>
-		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<RuntimeIdentifier>linux-x64</RuntimeIdentifier>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -15,16 +15,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Avalonia" Version="11.0.7" />
-		<PackageReference Include="Avalonia.Desktop" Version="11.0.7" />
-		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.7" />
-		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.7" />
+		<PackageReference Include="Avalonia" Version="11.0.9" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.0.9" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.9" />
+		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.9" />
 		<PackageReference Include="MessageBox.Avalonia" Version="3.1.5.1" />
 		
 		<PackageReference Include="itext7" Version="8.0.3" />
 		<PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.3" />
-
-		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.7" />
 	</ItemGroup>
 
 </Project>
