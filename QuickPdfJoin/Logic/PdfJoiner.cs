@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using iText.Kernel.Pdf;
 using iText.Kernel.Utils;
 

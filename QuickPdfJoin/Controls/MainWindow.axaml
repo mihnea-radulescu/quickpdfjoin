@@ -1,0 +1,78 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="QuickPdfJoin.Controls.MainWindow"
+        Icon="/MainWindowIcon.ico"
+        Title="Quick PDF Join"
+		MinWidth="800"
+		MinHeight="450"
+		Width="800"
+		Height="450"
+        WindowStartupLocation="CenterScreen">
+
+	<Grid HorizontalAlignment="Stretch"
+		  VerticalAlignment="Stretch">
+		
+		<Grid.RowDefinitions>
+			<RowDefinition Height="2*"/>
+			<RowDefinition Height="75*"/>
+			<RowDefinition Height="2*"/>
+			<RowDefinition Height="7*"/>
+			<RowDefinition Height="2*"/>
+			<RowDefinition Height="7*"/>
+			<RowDefinition Height="2*"/>
+			<RowDefinition Height="7*"/>
+			<RowDefinition Height="2*"/>
+		</Grid.RowDefinitions>
+		
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="2*"/>
+			<ColumnDefinition Width="96*"/>
+			<ColumnDefinition Width="2*"/>
+		</Grid.ColumnDefinitions>
+
+		<ListBox Name="_listBoxInputPdfFiles"
+				 Grid.Row="1"
+				 Grid.Column="1"
+				 HorizontalAlignment="Stretch"
+				 VerticalAlignment="Stretch"
+				 MinWidth="200"
+				 MinHeight="100"/>
+
+		<Button Name="_buttonClearInputPdfFiles"
+				Grid.Row="3"
+				Grid.Column="1"
+				HorizontalContentAlignment="Center"
+				VerticalContentAlignment="Center"
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Stretch"
+				Cursor="Hand"
+				Click="OnClearInputPdfFilesClick">
+			Clear input PDF files
+		</Button>
+
+		<Button Name="_buttonAddInputPdfFiles"
+				Grid.Row="5"
+				Grid.Column="1"
+				HorizontalContentAlignment="Center"
+				VerticalContentAlignment="Center"
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Stretch"
+				Cursor="Hand"
+				Click="OnAddInputPdfFilesClick">
+			Add input PDF files
+		</Button>
+
+		<Button Name="_buttonJoinPdfFiles"
+				Grid.Row="7"
+				Grid.Column="1"
+				HorizontalContentAlignment="Center"
+				VerticalContentAlignment="Center"
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Stretch"
+				Cursor="Hand"
+				Click="OnJoinPdfFilesClick">
+		</Button>
+		
+	</Grid>
+
+</Window>

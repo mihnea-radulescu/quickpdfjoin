@@ -3,6 +3,6 @@
              x:Class="QuickPdfJoin.App"
              RequestedThemeVariant="Default">
 	<Application.Styles>
-		<FluentTheme />
+		<FluentTheme/>
 	</Application.Styles>
 </Application>
