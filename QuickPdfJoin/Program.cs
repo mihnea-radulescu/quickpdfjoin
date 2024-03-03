@@ -1,9 +1,9 @@
 using System;
 using Avalonia;
 
-namespace QuickPdfJoin.Desktop;
+namespace QuickPdfJoin;
 
-public class Program
+public static class Program
 {
     [STAThread]
     public static void Main(string[] args) => BuildAvaloniaApp()
