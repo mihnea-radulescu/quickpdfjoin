@@ -6,9 +6,17 @@ namespace QuickPdfJoin.Logic;
 
 public class PdfJoiner : IPdfJoiner
 {
+	static PdfJoiner()
+	{
+		WriterProperties = new WriterProperties()
+			.SetCompressionLevel(CompressionConstants.BEST_COMPRESSION)
+			.SetFullCompressionMode(true)
+			.UseSmartMode();
+	}
+	
 	public void JoinPdfDocuments(IReadOnlyList<string> inputPdfFiles, string outputPdfFile)
 	{
-		using (var outputPdfDocument = new PdfDocument(new PdfWriter(outputPdfFile)))
+		using (var outputPdfDocument = new PdfDocument(new PdfWriter(outputPdfFile, WriterProperties)))
 		{
 			var pdfMerger = new PdfMerger(outputPdfDocument);
 
@@ -23,4 +31,10 @@ public class PdfJoiner : IPdfJoiner
 			}
 		}
 	}
+	
+	#region Private
+
+	private static readonly WriterProperties WriterProperties;
+
+	#endregion
 }

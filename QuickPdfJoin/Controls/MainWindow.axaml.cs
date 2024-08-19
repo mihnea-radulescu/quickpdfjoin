@@ -47,25 +47,25 @@ public partial class MainWindow : Window, IMainView
     {
         InitializeComponent();
 
-		SetInitialUiStatus();
+		SetInitialUiState();
 	}
 
-	public void SetUiEnabledStatus(bool isEnabled)
+	public void SetUiEnabledState(bool isEnabled)
 	{
 		if (isEnabled)
 		{
 			Closing -= OnMainWindowClosing;
 			_buttonJoinPdfFiles.Content = JoinPdfFilesDefaultButtonText;
+
+			SetButtonsEnabledState();
 		}
 		else
 		{
 			Closing += OnMainWindowClosing;
 			_buttonJoinPdfFiles.Content = JoinPdfFilesInProgressButtonText;
-		}
 
-		_buttonClearInputPdfFiles.IsEnabled = isEnabled;
-		_buttonAddInputPdfFiles.IsEnabled = isEnabled;
-		_buttonJoinPdfFiles.IsEnabled = isEnabled;
+			DisableButtons();
+		}
 	}
 
 	public async Task ShowSuccessMessage(string successMessage)
@@ -102,14 +102,14 @@ public partial class MainWindow : Window, IMainView
 	private static readonly FilePickerOpenOptions InputPdfFilesOpenOptions;
 	private static readonly FilePickerSaveOptions OutputPdfFileSaveOptions;
 
-	private void OnMainWindowClosing(object? sender, WindowClosingEventArgs e)
+	private static void OnMainWindowClosing(object? sender, WindowClosingEventArgs e)
 	{
 		e.Cancel = true;
 	}
 
 	private void OnClearInputPdfFilesClick(object sender, RoutedEventArgs e)
 	{
-		SetInitialUiStatus();
+		SetInitialUiState();
 	}
 
 	private async void OnAddInputPdfFilesClick(object sender, RoutedEventArgs e)
@@ -132,8 +132,21 @@ public partial class MainWindow : Window, IMainView
 			_listBoxInputPdfFiles.Items.Add(anAddedInputPdfListItem);
 		}
 
-		_buttonClearInputPdfFiles.IsEnabled = IsEnabledButtonClearInputPdfFiles();
-		_buttonJoinPdfFiles.IsEnabled = IsEnabledButtonJoinPdfFiles();
+		SetButtonsEnabledState();
+	}
+
+	private void OnRemoveInputPdfFilesClick(object sender, RoutedEventArgs e)
+	{
+		var selectedItems = _listBoxInputPdfFiles.SelectedItems!
+			.Cast<ListBoxItem>()
+			.ToList();
+		
+		foreach (var aSelectedItem in selectedItems)
+		{
+			_listBoxInputPdfFiles.Items.Remove(aSelectedItem);
+		}
+
+		SetButtonsEnabledState();
 	}
 
 	private async void OnJoinPdfFilesClick(object sender, RoutedEventArgs e)
@@ -152,18 +165,40 @@ public partial class MainWindow : Window, IMainView
 			JoinPdfFiles?.Invoke(this, joinPdfFilesEventArgs);
 		}
 	}
+	
+	private void OnListBoxInputPdfFilesSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	{
+		_buttonRemoveInputPdfFiles.IsEnabled = HasInputPdfFilesSelected();
+	}
 
-	private void SetInitialUiStatus()
+	private void SetInitialUiState()
 	{
 		_listBoxInputPdfFiles.Items.Clear();
-
-		_buttonClearInputPdfFiles.IsEnabled = false;
+		
 		_buttonJoinPdfFiles.Content = JoinPdfFilesDefaultButtonText;
+
+		SetButtonsEnabledState();
+	}
+	
+	private void SetButtonsEnabledState()
+	{
+		_buttonClearInputPdfFiles.IsEnabled = CanClearInputPdfFiles();
+		_buttonAddInputPdfFiles.IsEnabled = true;
+		_buttonRemoveInputPdfFiles.IsEnabled = HasInputPdfFilesSelected();
+		_buttonJoinPdfFiles.IsEnabled = CanJoinPdfFiles();
+	}
+	
+	private void DisableButtons()
+	{
+		_buttonClearInputPdfFiles.IsEnabled = false;
+		_buttonAddInputPdfFiles.IsEnabled = false;
+		_buttonRemoveInputPdfFiles.IsEnabled = false;
 		_buttonJoinPdfFiles.IsEnabled = false;
 	}
 
-	private bool IsEnabledButtonClearInputPdfFiles() => _listBoxInputPdfFiles.ItemCount >= 1;
-	private bool IsEnabledButtonJoinPdfFiles() => _listBoxInputPdfFiles.ItemCount >= 2;
+	private bool CanClearInputPdfFiles() => _listBoxInputPdfFiles.ItemCount >= 1;
+	private bool CanJoinPdfFiles() => _listBoxInputPdfFiles.ItemCount >= 2;
+	private bool HasInputPdfFilesSelected() => _listBoxInputPdfFiles.SelectedItems!.Count > 0;
 
 	private IReadOnlyList<string> GetInputPdfFilePaths()
 		=> _listBoxInputPdfFiles.Items

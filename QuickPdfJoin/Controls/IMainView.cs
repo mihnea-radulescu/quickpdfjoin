@@ -8,7 +8,7 @@ public interface IMainView
 {
 	void Show();
 	
-	void SetUiEnabledStatus(bool isEnabled);
+	void SetUiEnabledState(bool isEnabled);
 
 	Task ShowSuccessMessage(string successMessage);
 	Task ShowErrorMessage(string errorMessage);

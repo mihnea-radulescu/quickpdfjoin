@@ -39,12 +39,12 @@ public class MainPresenter
 		{
 			try
 			{
-				_mainView.SetUiEnabledStatus(false);
+				_mainView.SetUiEnabledState(false);
 
 				await JoinPdfDocuments(inputPdfFilePaths, outputPdfFilePath);
 
 				var successMessage = GetOutputFileSavedSuccessMessage(outputPdfFilePath);
-				await _mainView.ShowErrorMessage(successMessage);
+				await _mainView.ShowSuccessMessage(successMessage);
 			}
 			catch (Exception ex)
 			{
@@ -53,12 +53,12 @@ public class MainPresenter
 			}
 			finally
 			{
-				_mainView.SetUiEnabledStatus(true);
+				_mainView.SetUiEnabledState(true);
 			}
 		}
 	}
 
-	private bool HasInputOutputFileCollision(
+	private static bool HasInputOutputFileCollision(
 		IReadOnlyList<string> inputPdfFilePaths, string outputPdfFilePath) =>
 			inputPdfFilePaths.Contains(outputPdfFilePath, StringComparer.InvariantCultureIgnoreCase);
 

@@ -15,7 +15,9 @@
 		
 		<Grid.RowDefinitions>
 			<RowDefinition Height="2*"/>
-			<RowDefinition Height="75*"/>
+			<RowDefinition Height="60*"/>
+			<RowDefinition Height="2*"/>
+			<RowDefinition Height="7*"/>
 			<RowDefinition Height="2*"/>
 			<RowDefinition Height="7*"/>
 			<RowDefinition Height="2*"/>
@@ -36,8 +38,10 @@
 				 Grid.Column="1"
 				 HorizontalAlignment="Stretch"
 				 VerticalAlignment="Stretch"
+				 SelectionMode="Multiple"
 				 MinWidth="200"
-				 MinHeight="100"/>
+				 MinHeight="100"
+				 SelectionChanged="OnListBoxInputPdfFilesSelectionChanged"/>
 
 		<Button Name="_buttonClearInputPdfFiles"
 				Grid.Row="3"
@@ -62,9 +66,21 @@
 				Click="OnAddInputPdfFilesClick">
 			Add input PDF files
 		</Button>
+		
+		<Button Name="_buttonRemoveInputPdfFiles"
+		        Grid.Row="7"
+		        Grid.Column="1"
+		        HorizontalContentAlignment="Center"
+		        VerticalContentAlignment="Center"
+		        HorizontalAlignment="Stretch"
+		        VerticalAlignment="Stretch"
+		        Cursor="Hand"
+		        Click="OnRemoveInputPdfFilesClick">
+			Remove input PDF files
+		</Button>
 
 		<Button Name="_buttonJoinPdfFiles"
-				Grid.Row="7"
+				Grid.Row="9"
 				Grid.Column="1"
 				HorizontalContentAlignment="Center"
 				VerticalContentAlignment="Center"
