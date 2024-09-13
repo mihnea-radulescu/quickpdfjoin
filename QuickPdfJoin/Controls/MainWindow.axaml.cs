@@ -15,32 +15,8 @@ public partial class MainWindow : Window, IMainView
 {
     static MainWindow()
     {
-        var supportedFilePickerFileTypes = new List<FilePickerFileType>
-        {
-            new FilePickerFileType("PDF files")
-            {
-                Patterns = new List<string>
-                {
-                    "*.pdf",
-                    "*.PDF"
-                }
-            }
-		};
-
-        InputPdfFilesOpenOptions = new FilePickerOpenOptions
-		{
-			AllowMultiple = true,
-			FileTypeFilter = supportedFilePickerFileTypes,
-			Title = "Select Input PDF File or Files"
-		};
-
-        OutputPdfFileSaveOptions = new FilePickerSaveOptions
-        {
-            DefaultExtension = ".pdf",
-            FileTypeChoices = supportedFilePickerFileTypes,
-            ShowOverwritePrompt = true,
-            Title = "Select Output PDF File"
-        };
+	    DocumentsFolderPath = GetDocumentsFolderPath();
+	    SupportedFileTypes = GetSupportedFileTypes();
 	}
     
     public MainWindow()
@@ -98,9 +74,9 @@ public partial class MainWindow : Window, IMainView
 
     private const string JoinPdfFilesDefaultButtonText = "Join PDF files";
 	private const string JoinPdfFilesInProgressButtonText = "Joining PDF files...";
-
-	private static readonly FilePickerOpenOptions InputPdfFilesOpenOptions;
-	private static readonly FilePickerSaveOptions OutputPdfFileSaveOptions;
+	
+	private static readonly string DocumentsFolderPath;
+	private static readonly IReadOnlyList<FilePickerFileType> SupportedFileTypes;
 
 	private static void OnMainWindowClosing(object? sender, WindowClosingEventArgs e)
 	{
@@ -114,8 +90,16 @@ public partial class MainWindow : Window, IMainView
 
 	private async void OnAddInputPdfFilesClick(object sender, RoutedEventArgs e)
 	{
-		var inputPdfFiles = await StorageProvider.OpenFilePickerAsync(
-			InputPdfFilesOpenOptions);
+		var documentsFolder = await GetDocumentsFolder();
+		var inputPdfFilesOpenOptions = new FilePickerOpenOptions
+		{
+			AllowMultiple = true,
+			FileTypeFilter = SupportedFileTypes,
+			Title = "Select Input PDF File or Files",
+			SuggestedStartLocation = documentsFolder
+		};
+		
+		var inputPdfFiles = await StorageProvider.OpenFilePickerAsync(inputPdfFilesOpenOptions);
 
 		var addedInputPdfFilePaths = inputPdfFiles
 			.Select(anInputPdfFile => anInputPdfFile.Path.LocalPath)
@@ -151,8 +135,17 @@ public partial class MainWindow : Window, IMainView
 
 	private async void OnJoinPdfFilesClick(object sender, RoutedEventArgs e)
 	{
-		var outputPdfFile = await StorageProvider.SaveFilePickerAsync(
-			OutputPdfFileSaveOptions);
+		var documentsFolder = await GetDocumentsFolder();
+		var outputPdfFileSaveOptions = new FilePickerSaveOptions
+		{
+			DefaultExtension = ".pdf",
+			FileTypeChoices = SupportedFileTypes,
+			ShowOverwritePrompt = true,
+			Title = "Select Output PDF File",
+			SuggestedStartLocation = documentsFolder
+		};
+		
+		var outputPdfFile = await StorageProvider.SaveFilePickerAsync(outputPdfFileSaveOptions);
 
         if (outputPdfFile is not null)
         {
@@ -205,6 +198,28 @@ public partial class MainWindow : Window, IMainView
 				.Select(anItem => (ListBoxItem)anItem!)
 				.Select(aListBoxItem => (string)aListBoxItem.Content!)
 				.ToList();
+	
+	private async Task<IStorageFolder?> GetDocumentsFolder()
+		=> await StorageProvider.TryGetFolderFromPathAsync(DocumentsFolderPath);
+	
+	private static string GetDocumentsFolderPath() => Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
+	private static IReadOnlyList<FilePickerFileType> GetSupportedFileTypes()
+	{
+		var supportedFileTypes = new List<FilePickerFileType>
+		{
+			new FilePickerFileType("PDF files")
+			{
+				Patterns = new List<string>
+				{
+					"*.pdf",
+					"*.PDF"
+				}
+			}
+		};
+		
+		return supportedFileTypes;
+	}
+	
 	#endregion
 }
