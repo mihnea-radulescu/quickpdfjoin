@@ -14,23 +14,23 @@
 		  VerticalAlignment="Stretch">
 		
 		<Grid.RowDefinitions>
-			<RowDefinition Height="2*"/>
-			<RowDefinition Height="60*"/>
-			<RowDefinition Height="2*"/>
-			<RowDefinition Height="7*"/>
-			<RowDefinition Height="2*"/>
-			<RowDefinition Height="7*"/>
-			<RowDefinition Height="2*"/>
-			<RowDefinition Height="7*"/>
-			<RowDefinition Height="2*"/>
-			<RowDefinition Height="7*"/>
-			<RowDefinition Height="2*"/>
+			<RowDefinition Height="1*"/>
+			<RowDefinition Height="62*"/>
+			<RowDefinition Height="1*"/>
+			<RowDefinition Height="8*"/>
+			<RowDefinition Height="1*"/>
+			<RowDefinition Height="8*"/>
+			<RowDefinition Height="1*"/>
+			<RowDefinition Height="8*"/>
+			<RowDefinition Height="1*"/>
+			<RowDefinition Height="8*"/>
+			<RowDefinition Height="1*"/>
 		</Grid.RowDefinitions>
 		
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="2*"/>
-			<ColumnDefinition Width="96*"/>
-			<ColumnDefinition Width="2*"/>
+			<ColumnDefinition Width="1*"/>
+			<ColumnDefinition Width="98*"/>
+			<ColumnDefinition Width="1*"/>
 		</Grid.ColumnDefinitions>
 
 		<ListBox Name="_listBoxInputPdfFiles"

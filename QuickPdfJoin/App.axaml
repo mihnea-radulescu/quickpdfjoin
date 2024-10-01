@@ -4,5 +4,9 @@
              RequestedThemeVariant="Default">
 	<Application.Styles>
 		<FluentTheme/>
+		
+		<Style Selector="Button">
+			<Setter Property="CornerRadius" Value="5"/>
+		</Style>
 	</Application.Styles>
 </Application>
