@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Quick PDF Join
+Comment=Simple application that joins multiple PDF files together
+Categories=Utility;
+Icon=io.github.mihnea_radulescu.quickpdfjoin
+Exec=QuickPdfJoin
+Terminal=false

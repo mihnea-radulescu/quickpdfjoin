@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component type="desktop-application">
+
+	<id>io.github.mihnea_radulescu.quickpdfjoin</id>
+
+	<name>Quick PDF Join</name>
+	<summary>Simple application that joins multiple PDF files together</summary>
+
+	<developer_name>Mihnea Rădulescu</developer_name>
+	<content_rating type="oars-1.1" />
+
+	<metadata_license>CC0-1.0</metadata_license>
+	<project_license>GPL-3.0-or-later</project_license>
+
+	<description>
+		<p>The application reads input PDF files from, and stores output PDF files to the user's Documents folder.</p>
+		<p>Features:</p>
+		<ul>
+			<li>adding, removing and clearing of input PDF files</li>
+			<li>multi-selection, when adding PDF files</li>
+			<li>joining of differently structured PDF files</li>
+			<li>automatic compression of the output PDF file</li>
+		</ul>
+	</description>
+
+	<categories>
+		<category>Utility</category>
+	</categories>
+
+	<keywords>
+		<keyword>PDF</keyword>
+		<keyword>PDF merge</keyword>
+	</keywords>
+
+	<launchable type="desktop-id">io.github.mihnea_radulescu.quickpdfjoin.desktop</launchable>
+	
+	<screenshots>
+		<screenshot type="default">
+			<image>https://raw.githubusercontent.com/mihnea-radulescu/quickpdfjoin/main/Screenshot-Dark.jpg</image>
+		</screenshot>
+		<screenshot>
+			<image>https://raw.githubusercontent.com/mihnea-radulescu/quickpdfjoin/main/Screenshot-Light.jpg</image>
+		</screenshot>
+	</screenshots>
+
+	<url type="homepage">https://github.com/mihnea-radulescu/quickpdfjoin</url>
+	<url type="bugtracker">https://github.com/mihnea-radulescu/quickpdfjoin/issues</url>
+
+	<releases>
+		<release version="1.2024.10.02" date="2024-10-02">
+			<description>
+				<p>Visual layout updates</p>
+			</description>
+		</release>
+		<release version="1.2024.09.14" date="2024-09-14">
+			<description>
+				<p>Initial release</p>
+			</description>
+		</release>
+	</releases>
+
+</component>
