@@ -13,15 +13,15 @@ namespace QuickPdfJoin.Controls;
 
 public partial class MainWindow : Window, IMainView
 {
-    static MainWindow()
-    {
-	    DocumentsFolderPath = GetDocumentsFolderPath();
-	    SupportedFileTypes = GetSupportedFileTypes();
+	static MainWindow()
+	{
+		DocumentsFolderPath = GetDocumentsFolderPath();
+		SupportedFileTypes = GetSupportedFileTypes();
 	}
-    
-    public MainWindow()
-    {
-        InitializeComponent();
+
+	public MainWindow()
+	{
+		InitializeComponent();
 
 		SetInitialUiState();
 	}
@@ -70,11 +70,11 @@ public partial class MainWindow : Window, IMainView
 
 	public event EventHandler<JoinPdfFilesEventArgs>? JoinPdfFiles;
 
-    #region Private
+	#region Private
 
-    private const string JoinPdfFilesDefaultButtonText = "Join PDF files";
+	private const string JoinPdfFilesDefaultButtonText = "Join PDF files";
 	private const string JoinPdfFilesInProgressButtonText = "Joining PDF files...";
-	
+
 	private static readonly string DocumentsFolderPath;
 	private static readonly IReadOnlyList<FilePickerFileType> SupportedFileTypes;
 
@@ -98,7 +98,7 @@ public partial class MainWindow : Window, IMainView
 			Title = "Select Input PDF File or Files",
 			SuggestedStartLocation = documentsFolder
 		};
-		
+
 		var inputPdfFiles = await StorageProvider.OpenFilePickerAsync(inputPdfFilesOpenOptions);
 
 		var addedInputPdfFilePaths = inputPdfFiles
@@ -124,7 +124,7 @@ public partial class MainWindow : Window, IMainView
 		var selectedItems = _listBoxInputPdfFiles.SelectedItems!
 			.Cast<ListBoxItem>()
 			.ToList();
-		
+
 		foreach (var aSelectedItem in selectedItems)
 		{
 			_listBoxInputPdfFiles.Items.Remove(aSelectedItem);
@@ -144,11 +144,11 @@ public partial class MainWindow : Window, IMainView
 			Title = "Select Output PDF File",
 			SuggestedStartLocation = documentsFolder
 		};
-		
+
 		var outputPdfFile = await StorageProvider.SaveFilePickerAsync(outputPdfFileSaveOptions);
 
-        if (outputPdfFile is not null)
-        {
+		if (outputPdfFile is not null)
+		{
 			var inputPdfFilePaths = GetInputPdfFilePaths();
 			var outputPdfFilePath = outputPdfFile.Path.LocalPath;
 
@@ -158,7 +158,7 @@ public partial class MainWindow : Window, IMainView
 			JoinPdfFiles?.Invoke(this, joinPdfFilesEventArgs);
 		}
 	}
-	
+
 	private void OnListBoxInputPdfFilesSelectionChanged(object? sender, SelectionChangedEventArgs e)
 	{
 		_buttonRemoveInputPdfFiles.IsEnabled = HasInputPdfFilesSelected();
@@ -167,12 +167,12 @@ public partial class MainWindow : Window, IMainView
 	private void SetInitialUiState()
 	{
 		_listBoxInputPdfFiles.Items.Clear();
-		
+
 		_buttonJoinPdfFiles.Content = JoinPdfFilesDefaultButtonText;
 
 		SetButtonsEnabledState();
 	}
-	
+
 	private void SetButtonsEnabledState()
 	{
 		_buttonClearInputPdfFiles.IsEnabled = CanClearInputPdfFiles();
@@ -180,7 +180,7 @@ public partial class MainWindow : Window, IMainView
 		_buttonRemoveInputPdfFiles.IsEnabled = HasInputPdfFilesSelected();
 		_buttonJoinPdfFiles.IsEnabled = CanJoinPdfFiles();
 	}
-	
+
 	private void DisableButtons()
 	{
 		_buttonClearInputPdfFiles.IsEnabled = false;
@@ -198,10 +198,10 @@ public partial class MainWindow : Window, IMainView
 				.Select(anItem => (ListBoxItem)anItem!)
 				.Select(aListBoxItem => (string)aListBoxItem.Content!)
 				.ToList();
-	
+
 	private async Task<IStorageFolder?> GetDocumentsFolder()
 		=> await StorageProvider.TryGetFolderFromPathAsync(DocumentsFolderPath);
-	
+
 	private static string GetDocumentsFolderPath() => Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
 	private static IReadOnlyList<FilePickerFileType> GetSupportedFileTypes()
@@ -217,9 +217,9 @@ public partial class MainWindow : Window, IMainView
 				}
 			}
 		};
-		
+
 		return supportedFileTypes;
 	}
-	
+
 	#endregion
 }

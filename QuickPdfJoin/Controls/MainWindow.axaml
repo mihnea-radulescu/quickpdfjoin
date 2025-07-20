@@ -1,18 +1,17 @@
 <Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        x:Class="QuickPdfJoin.Controls.MainWindow"
-        Icon="/MainWindowIcon.ico"
-        Title="Quick PDF Join"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		x:Class="QuickPdfJoin.Controls.MainWindow"
+		Icon="/MainWindowIcon.ico"
+		Title="Quick PDF Join"
 		MinWidth="800"
 		MinHeight="450"
 		Width="800"
 		Height="450"
-        WindowStartupLocation="CenterScreen"
-        Focusable="True">
+		WindowStartupLocation="CenterScreen"
+		Focusable="True">
 
 	<Grid HorizontalAlignment="Stretch"
 		  VerticalAlignment="Stretch">
-		
 		<Grid.RowDefinitions>
 			<RowDefinition Height="1*"/>
 			<RowDefinition Height="62*"/>
@@ -26,7 +25,6 @@
 			<RowDefinition Height="8*"/>
 			<RowDefinition Height="1*"/>
 		</Grid.RowDefinitions>
-		
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="1*"/>
 			<ColumnDefinition Width="98*"/>
@@ -66,16 +64,16 @@
 				Click="OnAddInputPdfFilesClick">
 			Add input PDF files
 		</Button>
-		
+
 		<Button Name="_buttonRemoveInputPdfFiles"
-		        Grid.Row="7"
-		        Grid.Column="1"
-		        HorizontalContentAlignment="Center"
-		        VerticalContentAlignment="Center"
-		        HorizontalAlignment="Stretch"
-		        VerticalAlignment="Stretch"
-		        Cursor="Hand"
-		        Click="OnRemoveInputPdfFilesClick">
+				Grid.Row="7"
+				Grid.Column="1"
+				HorizontalContentAlignment="Center"
+				VerticalContentAlignment="Center"
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Stretch"
+				Cursor="Hand"
+				Click="OnRemoveInputPdfFilesClick">
 			Remove input PDF files
 		</Button>
 
@@ -89,7 +87,7 @@
 				Cursor="Hand"
 				Click="OnJoinPdfFilesClick">
 		</Button>
-		
+
 	</Grid>
 
 </Window>

@@ -7,17 +7,17 @@ namespace QuickPdfJoin;
 
 public class App : Application
 {
-    public override void Initialize()
-    {
-        AvaloniaXamlLoader.Load(this);
-    }
+	public override void Initialize()
+	{
+		AvaloniaXamlLoader.Load(this);
+	}
 
-    public override void OnFrameworkInitializationCompleted()
-    {
-        IPdfJoiner pdfJoiner = new PdfJoiner();
-        IMainView mainView = new MainWindow();
+	public override void OnFrameworkInitializationCompleted()
+	{
+		IPdfJoiner pdfJoiner = new PdfJoiner();
+		IMainView mainView = new MainWindow();
 
-        var mainPresenter = new MainPresenter(pdfJoiner, mainView);
-        mainView.Show();
-    }
+		var mainPresenter = new MainPresenter(pdfJoiner, mainView);
+		mainView.Show();
+	}
 }

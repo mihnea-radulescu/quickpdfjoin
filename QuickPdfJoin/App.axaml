@@ -1,10 +1,10 @@
 <Application xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="QuickPdfJoin.App"
-             RequestedThemeVariant="Default">
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 x:Class="QuickPdfJoin.App"
+			 RequestedThemeVariant="Default">
 	<Application.Styles>
 		<FluentTheme/>
-		
+
 		<Style Selector="Button">
 			<Setter Property="CornerRadius" Value="5"/>
 		</Style>

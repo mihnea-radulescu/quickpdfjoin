@@ -7,7 +7,7 @@ namespace QuickPdfJoin.Controls;
 public interface IMainView
 {
 	void Show();
-	
+
 	void SetUiEnabledState(bool isEnabled);
 
 	Task ShowSuccessMessage(string successMessage);

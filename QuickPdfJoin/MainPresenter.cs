@@ -13,7 +13,7 @@ public class MainPresenter
 	public MainPresenter(
 		IPdfJoiner pdfJoiner,
 		IMainView mainView)
-    {
+	{
 		_pdfJoiner = pdfJoiner;
 		_mainView = mainView;
 
@@ -65,13 +65,13 @@ public class MainPresenter
 	private async Task JoinPdfDocuments(IReadOnlyList<string> inputPdfFiles, string outputPdfFile)
 		=> await Task.Run(() => _pdfJoiner.JoinPdfDocuments(inputPdfFiles, outputPdfFile));
 
-	private string GetOutputFileSavedSuccessMessage(string outputPdfFilePath)
+	private static string GetOutputFileSavedSuccessMessage(string outputPdfFilePath)
 		=> $@"Output PDF file ""{outputPdfFilePath}"" has been successfully saved.";
 
-	private string GetInputOutputFileCollisionErrorMessage(string outputPdfFilePath)
+	private static string GetInputOutputFileCollisionErrorMessage(string outputPdfFilePath)
 		=> $@"Cannot save output PDF file ""{outputPdfFilePath}"", since it would overwrite one of the input PDF files!";
 
-	private string GetOutputFileNotSavedErrorMessage(string outputPdfFilePath, Exception ex)
+	private static string GetOutputFileNotSavedErrorMessage(string outputPdfFilePath, Exception ex)
 		=> $@"Could not save output PDF file ""{outputPdfFilePath}""!{Environment.NewLine}{ex.Source}: {ex.Message}";
 
 	#endregion

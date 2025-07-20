@@ -13,7 +13,7 @@ public class PdfJoiner : IPdfJoiner
 			.SetFullCompressionMode(true)
 			.UseSmartMode();
 	}
-	
+
 	public void JoinPdfDocuments(IReadOnlyList<string> inputPdfFiles, string outputPdfFile)
 	{
 		using (var outputPdfDocument = new PdfDocument(new PdfWriter(outputPdfFile, WriterProperties)))
@@ -31,7 +31,7 @@ public class PdfJoiner : IPdfJoiner
 			}
 		}
 	}
-	
+
 	#region Private
 
 	private static readonly WriterProperties WriterProperties;
