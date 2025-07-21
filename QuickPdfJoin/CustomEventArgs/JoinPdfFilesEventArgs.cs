@@ -1,18 +1,19 @@
 using System;
 using System.Collections.Generic;
+using QuickPdfJoin.DataTypes;
 
 namespace QuickPdfJoin.CustomEventArgs;
 
 public class JoinPdfFilesEventArgs : EventArgs
 {
 	public JoinPdfFilesEventArgs(
-		IReadOnlyList<string> inputPdfFilePaths,
+		IReadOnlyList<PdfFileInfo> inputPdfFiles,
 		string outputPdfFilePath)
 	{
-		InputPdfFilePaths = inputPdfFilePaths;
+		InputPdfFiles = inputPdfFiles;
 		OutputPdfFilePath = outputPdfFilePath;
 	}
 
-	public IReadOnlyList<string> InputPdfFilePaths { get; }
+	public IReadOnlyList<PdfFileInfo> InputPdfFiles { get; }
 	public string OutputPdfFilePath { get; }
 }

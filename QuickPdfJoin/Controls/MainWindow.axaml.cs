@@ -8,6 +8,7 @@ using Avalonia.Layout;
 using Avalonia.Platform.Storage;
 using MsBox.Avalonia;
 using QuickPdfJoin.CustomEventArgs;
+using QuickPdfJoin.DataTypes;
 
 namespace QuickPdfJoin.Controls;
 
@@ -15,7 +16,6 @@ public partial class MainWindow : Window, IMainView
 {
 	static MainWindow()
 	{
-		DocumentsFolderPath = GetDocumentsFolderPath();
 		SupportedFileTypes = GetSupportedFileTypes();
 	}
 
@@ -24,6 +24,21 @@ public partial class MainWindow : Window, IMainView
 		InitializeComponent();
 
 		SetInitialUiState();
+	}
+
+	public void PopulateInputPdfFiles(IReadOnlyList<PdfFileInfo> inputPdfFiles)
+	{
+		foreach (var anInputPdfFile in inputPdfFiles)
+		{
+			var inputPdfFileListBoxItem = new ListBoxItem
+			{
+				Tag = anInputPdfFile,
+				Content = anInputPdfFile.FileName,
+				HorizontalContentAlignment = HorizontalAlignment.Center
+			};
+
+			_listBoxInputPdfFiles.Items.Add(inputPdfFileListBoxItem);
+		}
 	}
 
 	public void SetUiEnabledState(bool isEnabled)
@@ -68,6 +83,7 @@ public partial class MainWindow : Window, IMainView
 		await errorMessageBox.ShowWindowDialogAsync(this);
 	}
 
+	public event EventHandler<AddInputPdfFilesEventArgs>? AddInputPdfFiles;
 	public event EventHandler<JoinPdfFilesEventArgs>? JoinPdfFiles;
 
 	#region Private
@@ -75,7 +91,6 @@ public partial class MainWindow : Window, IMainView
 	private const string JoinPdfFilesDefaultButtonText = "Join PDF files";
 	private const string JoinPdfFilesInProgressButtonText = "Joining PDF files...";
 
-	private static readonly string DocumentsFolderPath;
 	private static readonly IReadOnlyList<FilePickerFileType> SupportedFileTypes;
 
 	private static void OnMainWindowClosing(object? sender, WindowClosingEventArgs e)
@@ -90,31 +105,22 @@ public partial class MainWindow : Window, IMainView
 
 	private async void OnAddInputPdfFilesClick(object sender, RoutedEventArgs e)
 	{
-		var documentsFolder = await GetDocumentsFolder();
 		var inputPdfFilesOpenOptions = new FilePickerOpenOptions
 		{
 			AllowMultiple = true,
 			FileTypeFilter = SupportedFileTypes,
-			Title = "Select Input PDF File or Files",
-			SuggestedStartLocation = documentsFolder
+			Title = "Select Input PDF File or Files"
 		};
 
-		var inputPdfFiles = await StorageProvider.OpenFilePickerAsync(inputPdfFilesOpenOptions);
+		var inputPdfStorageFiles = await StorageProvider.OpenFilePickerAsync(
+			inputPdfFilesOpenOptions);
 
-		var addedInputPdfFilePaths = inputPdfFiles
+		var inputPdfFilePaths = inputPdfStorageFiles
 			.Select(anInputPdfFile => anInputPdfFile.Path.LocalPath)
 			.ToList();
 
-		foreach (var anAddedInputPdfFilePath in addedInputPdfFilePaths)
-		{
-			var anAddedInputPdfListItem = new ListBoxItem
-			{
-				Content = anAddedInputPdfFilePath,
-				HorizontalContentAlignment = HorizontalAlignment.Center
-			};
-
-			_listBoxInputPdfFiles.Items.Add(anAddedInputPdfListItem);
-		}
+		var addInputPdfFilesEventArgs = new AddInputPdfFilesEventArgs(inputPdfFilePaths);
+		AddInputPdfFiles?.Invoke(this, addInputPdfFilesEventArgs);
 
 		SetButtonsEnabledState();
 	}
@@ -135,26 +141,24 @@ public partial class MainWindow : Window, IMainView
 
 	private async void OnJoinPdfFilesClick(object sender, RoutedEventArgs e)
 	{
-		var documentsFolder = await GetDocumentsFolder();
 		var outputPdfFileSaveOptions = new FilePickerSaveOptions
 		{
 			DefaultExtension = ".pdf",
+			SuggestedFileName = "Joined.pdf",
 			FileTypeChoices = SupportedFileTypes,
 			ShowOverwritePrompt = true,
-			Title = "Select Output PDF File",
-			SuggestedStartLocation = documentsFolder
+			Title = "Select Output PDF File"
 		};
 
-		var outputPdfFile = await StorageProvider.SaveFilePickerAsync(outputPdfFileSaveOptions);
+		var outputPdfStorageFile = await StorageProvider.SaveFilePickerAsync(
+			outputPdfFileSaveOptions);
 
-		if (outputPdfFile is not null)
+		if (outputPdfStorageFile is not null)
 		{
-			var inputPdfFilePaths = GetInputPdfFilePaths();
-			var outputPdfFilePath = outputPdfFile.Path.LocalPath;
+			var inputPdfFiles = GetInputPdfFiles();
+			var outputPdfFilePath = outputPdfStorageFile.Path.LocalPath;
 
-			var joinPdfFilesEventArgs =
-				new JoinPdfFilesEventArgs(inputPdfFilePaths, outputPdfFilePath);
-
+			var joinPdfFilesEventArgs = new JoinPdfFilesEventArgs(inputPdfFiles, outputPdfFilePath);
 			JoinPdfFiles?.Invoke(this, joinPdfFilesEventArgs);
 		}
 	}
@@ -193,16 +197,11 @@ public partial class MainWindow : Window, IMainView
 	private bool CanJoinPdfFiles() => _listBoxInputPdfFiles.ItemCount >= 2;
 	private bool HasInputPdfFilesSelected() => _listBoxInputPdfFiles.SelectedItems!.Count > 0;
 
-	private IReadOnlyList<string> GetInputPdfFilePaths()
+	private IReadOnlyList<PdfFileInfo> GetInputPdfFiles()
 		=> _listBoxInputPdfFiles.Items
-				.Select(anItem => (ListBoxItem)anItem!)
-				.Select(aListBoxItem => (string)aListBoxItem.Content!)
-				.ToList();
-
-	private async Task<IStorageFolder?> GetDocumentsFolder()
-		=> await StorageProvider.TryGetFolderFromPathAsync(DocumentsFolderPath);
-
-	private static string GetDocumentsFolderPath() => Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+			.Cast<ListBoxItem>()
+			.Select(aListBoxItem => (PdfFileInfo)aListBoxItem.Tag!)
+			.ToList();
 
 	private static IReadOnlyList<FilePickerFileType> GetSupportedFileTypes()
 	{
@@ -210,11 +209,7 @@ public partial class MainWindow : Window, IMainView
 		{
 			new FilePickerFileType("PDF files")
 			{
-				Patterns = new List<string>
-				{
-					"*.pdf",
-					"*.PDF"
-				}
+				Patterns = ["*.pdf", "*.PDF"]
 			}
 		};
 

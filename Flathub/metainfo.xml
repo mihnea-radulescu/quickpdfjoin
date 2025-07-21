@@ -14,7 +14,6 @@
 	<project_license>GPL-3.0-or-later</project_license>
 
 	<description>
-		<p>The application reads input PDF files from, and stores output PDF files to the user's Documents folder.</p>
 		<p>Features:</p>
 		<ul>
 			<li>adding, removing and clearing of input PDF files</li>
@@ -49,6 +48,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/quickpdfjoin/issues</url>
 
 	<releases>
+		<release version="1.2025.07.21" date="2025-07-21">
+			<description>
+				<p>Updated the UI logic</p>
+			</description>
+		</release>
 		<release version="1.2025.07.20" date="2025-07-20">
 			<description>
 				<p>Updated application libraries</p>

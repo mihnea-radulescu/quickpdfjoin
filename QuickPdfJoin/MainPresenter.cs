@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using QuickPdfJoin.Controls;
 using QuickPdfJoin.CustomEventArgs;
+using QuickPdfJoin.DataTypes;
 using QuickPdfJoin.Logic;
 
 namespace QuickPdfJoin;
@@ -17,6 +19,7 @@ public class MainPresenter
 		_pdfJoiner = pdfJoiner;
 		_mainView = mainView;
 
+		_mainView.AddInputPdfFiles += OnAddInputPdfFiles;
 		_mainView.JoinPdfFiles += OnJoinPdfFiles;
 	}
 
@@ -25,14 +28,33 @@ public class MainPresenter
 	private readonly IPdfJoiner _pdfJoiner;
 	private readonly IMainView _mainView;
 
-	private async void OnJoinPdfFiles(object? sender, JoinPdfFilesEventArgs e)
+	private void OnAddInputPdfFiles(object? sender, AddInputPdfFilesEventArgs e)
 	{
 		var inputPdfFilePaths = e.InputPdfFilePaths;
+
+		var inputPdfFiles = inputPdfFilePaths
+			.Select(anInputPdfFilePath => new PdfFileInfo(
+				GetFileNameFromPath(anInputPdfFilePath), anInputPdfFilePath))
+			.ToList();
+
+		_mainView.PopulateInputPdfFiles(inputPdfFiles);
+	}
+
+	private async void OnJoinPdfFiles(object? sender, JoinPdfFilesEventArgs e)
+	{
+		var inputPdfFiles = e.InputPdfFiles;
 		var outputPdfFilePath = e.OutputPdfFilePath;
+
+		var inputPdfFilePaths = inputPdfFiles
+			.Select(anInputPdfFile => anInputPdfFile.FilePath)
+			.ToList();
+
+		var outputPdfFile = new PdfFileInfo(
+			GetFileNameFromPath(outputPdfFilePath), outputPdfFilePath);
 
 		if (HasInputOutputFileCollision(inputPdfFilePaths, outputPdfFilePath))
 		{
-			var errorMessage = GetInputOutputFileCollisionErrorMessage(outputPdfFilePath);
+			var errorMessage = GetInputOutputFileCollisionErrorMessage(outputPdfFile);
 			await _mainView.ShowErrorMessage(errorMessage);
 		}
 		else
@@ -43,12 +65,12 @@ public class MainPresenter
 
 				await JoinPdfDocuments(inputPdfFilePaths, outputPdfFilePath);
 
-				var successMessage = GetOutputFileSavedSuccessMessage(outputPdfFilePath);
+				var successMessage = GetOutputFileSavedSuccessMessage(outputPdfFile);
 				await _mainView.ShowSuccessMessage(successMessage);
 			}
-			catch (Exception ex)
+			catch
 			{
-				var errorMessage = GetOutputFileNotSavedErrorMessage(outputPdfFilePath, ex);
+				var errorMessage = GetOutputFileNotSavedErrorMessage(outputPdfFile);
 				await _mainView.ShowErrorMessage(errorMessage);
 			}
 			finally
@@ -58,21 +80,23 @@ public class MainPresenter
 		}
 	}
 
+	private async Task JoinPdfDocuments(IReadOnlyList<string> inputPdfFiles, string outputPdfFile)
+		=> await Task.Run(() => _pdfJoiner.JoinPdfDocuments(inputPdfFiles, outputPdfFile));
+
+	private static string GetFileNameFromPath(string filePath) => Path.GetFileName(filePath);
+
 	private static bool HasInputOutputFileCollision(
 		IReadOnlyList<string> inputPdfFilePaths, string outputPdfFilePath) =>
 			inputPdfFilePaths.Contains(outputPdfFilePath, StringComparer.InvariantCultureIgnoreCase);
 
-	private async Task JoinPdfDocuments(IReadOnlyList<string> inputPdfFiles, string outputPdfFile)
-		=> await Task.Run(() => _pdfJoiner.JoinPdfDocuments(inputPdfFiles, outputPdfFile));
+	private static string GetInputOutputFileCollisionErrorMessage(PdfFileInfo outputPdfFile)
+		=> $@"Cannot save output PDF file ""{outputPdfFile.FileName}"", since it would overwrite one of the input PDF files!";
 
-	private static string GetOutputFileSavedSuccessMessage(string outputPdfFilePath)
-		=> $@"Output PDF file ""{outputPdfFilePath}"" has been successfully saved.";
+	private static string GetOutputFileSavedSuccessMessage(PdfFileInfo outputPdfFile)
+		=> $@"Output PDF file ""{outputPdfFile.FileName}"" has been successfully saved.";
 
-	private static string GetInputOutputFileCollisionErrorMessage(string outputPdfFilePath)
-		=> $@"Cannot save output PDF file ""{outputPdfFilePath}"", since it would overwrite one of the input PDF files!";
-
-	private static string GetOutputFileNotSavedErrorMessage(string outputPdfFilePath, Exception ex)
-		=> $@"Could not save output PDF file ""{outputPdfFilePath}""!{Environment.NewLine}{ex.Source}: {ex.Message}";
+	private static string GetOutputFileNotSavedErrorMessage(PdfFileInfo outputPdfFile)
+		=> $@"Could not save output PDF file ""{outputPdfFile.FileName}""!";
 
 	#endregion
 }
