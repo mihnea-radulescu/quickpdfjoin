@@ -10,13 +10,13 @@ public interface IMainView
 {
 	void Show();
 
-	void PopulateInputPdfFiles(IReadOnlyList<PdfFileInfo> inputPdfFiles);
+	void PopulatePdfFiles(IReadOnlyList<FileInfo> pdfFiles);
 
 	void SetUiEnabledState(bool isEnabled);
 
 	Task ShowSuccessMessage(string successMessage);
 	Task ShowErrorMessage(string errorMessage);
 
-	event EventHandler<AddInputPdfFilesEventArgs>? AddInputPdfFiles;
+	event EventHandler<AddPdfFilesEventArgs>? AddPdfFiles;
 	event EventHandler<JoinPdfFilesEventArgs>? JoinPdfFiles;
 }

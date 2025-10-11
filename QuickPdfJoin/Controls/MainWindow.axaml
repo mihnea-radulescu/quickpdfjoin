@@ -7,9 +7,7 @@
 		MinHeight="450"
 		Width="800"
 		Height="450"
-		WindowStartupLocation="CenterScreen"
-		Focusable="True">
-
+		WindowStartupLocation="CenterScreen">
 	<Grid HorizontalAlignment="Stretch"
 		  VerticalAlignment="Stretch">
 		<Grid.RowDefinitions>
@@ -31,7 +29,7 @@
 			<ColumnDefinition Width="1*"/>
 		</Grid.ColumnDefinitions>
 
-		<ListBox Name="_listBoxInputPdfFiles"
+		<ListBox Name="_pdfFilesListBox"
 				 Grid.Row="1"
 				 Grid.Column="1"
 				 HorizontalAlignment="Stretch"
@@ -39,55 +37,33 @@
 				 SelectionMode="Multiple"
 				 MinWidth="200"
 				 MinHeight="100"
-				 SelectionChanged="OnListBoxInputPdfFilesSelectionChanged"/>
+				 SelectionChanged="OnPdfFilesListBoxSelectionChanged"/>
 
-		<Button Name="_buttonClearInputPdfFiles"
+		<Button Name="_clearPdfFilesButton"
 				Grid.Row="3"
 				Grid.Column="1"
-				HorizontalContentAlignment="Center"
-				VerticalContentAlignment="Center"
-				HorizontalAlignment="Stretch"
-				VerticalAlignment="Stretch"
-				Cursor="Hand"
-				Click="OnClearInputPdfFilesClick">
-			Clear input PDF files
+				Click="OnClearPdfFilesClick">
+			Clear PDF files
 		</Button>
 
-		<Button Name="_buttonAddInputPdfFiles"
+		<Button Name="_addPdfFilesButton"
 				Grid.Row="5"
 				Grid.Column="1"
-				HorizontalContentAlignment="Center"
-				VerticalContentAlignment="Center"
-				HorizontalAlignment="Stretch"
-				VerticalAlignment="Stretch"
-				Cursor="Hand"
-				Click="OnAddInputPdfFilesClick">
-			Add input PDF files
+				Click="OnAddPdfFilesClick">
+			Add PDF files
 		</Button>
 
-		<Button Name="_buttonRemoveInputPdfFiles"
+		<Button Name="_removeSelectedPdfFilesButton"
 				Grid.Row="7"
 				Grid.Column="1"
-				HorizontalContentAlignment="Center"
-				VerticalContentAlignment="Center"
-				HorizontalAlignment="Stretch"
-				VerticalAlignment="Stretch"
-				Cursor="Hand"
-				Click="OnRemoveInputPdfFilesClick">
-			Remove input PDF files
+				Click="OnRemoveSelectedPdfFilesClick">
+			Remove selected PDF files
 		</Button>
 
-		<Button Name="_buttonJoinPdfFiles"
+		<Button Name="_joinPdfFilesButton"
 				Grid.Row="9"
 				Grid.Column="1"
-				HorizontalContentAlignment="Center"
-				VerticalContentAlignment="Center"
-				HorizontalAlignment="Stretch"
-				VerticalAlignment="Stretch"
-				Cursor="Hand"
 				Click="OnJoinPdfFilesClick">
 		</Button>
-
 	</Grid>
-
 </Window>

@@ -9,6 +9,7 @@ using Avalonia.Platform.Storage;
 using MsBox.Avalonia;
 using QuickPdfJoin.CustomEventArgs;
 using QuickPdfJoin.DataTypes;
+using QuickPdfJoin.Extensions;
 
 namespace QuickPdfJoin.Controls;
 
@@ -23,21 +24,39 @@ public partial class MainWindow : Window, IMainView
 	{
 		InitializeComponent();
 
-		SetInitialUiState();
+		_joinPdfFilesButton.Content = DefaultJoinPdfFilesButtonText;
+
+		SetButtonsEnabledState();
 	}
 
-	public void PopulateInputPdfFiles(IReadOnlyList<PdfFileInfo> inputPdfFiles)
+	public void PopulatePdfFiles(IReadOnlyList<FileInfo> pdfFiles)
 	{
-		foreach (var anInputPdfFile in inputPdfFiles)
+		var firstPdfIndex = 0;
+
+		for (var i = 0; i < pdfFiles.Count; i++)
 		{
-			var inputPdfFileListBoxItem = new ListBoxItem
+			var aPdfFile = pdfFiles[i];
+
+			IFileItemControl pdfFileItemControl = new FileItemControl
 			{
-				Tag = anInputPdfFile,
-				Content = anInputPdfFile.FileName,
-				HorizontalContentAlignment = HorizontalAlignment.Center
+				FileName = aPdfFile.FileName
 			};
 
-			_listBoxInputPdfFiles.Items.Add(inputPdfFileListBoxItem);
+			pdfFileItemControl.ReorderFile += OnReorderPdfFiles;
+
+			var pdfFileListBoxItem = new ListBoxItem
+			{
+				Tag = aPdfFile,
+				Content = pdfFileItemControl,
+				HorizontalContentAlignment = DefaultHorizontalAlignment
+			};
+
+			_pdfFilesListBox.Items.Add(pdfFileListBoxItem);
+
+			if (i == firstPdfIndex)
+			{
+				_pdfFilesListBox.SelectedItem = pdfFileListBoxItem;
+			}
 		}
 	}
 
@@ -46,14 +65,14 @@ public partial class MainWindow : Window, IMainView
 		if (isEnabled)
 		{
 			Closing -= OnMainWindowClosing;
-			_buttonJoinPdfFiles.Content = JoinPdfFilesDefaultButtonText;
+			_joinPdfFilesButton.Content = DefaultJoinPdfFilesButtonText;
 
 			SetButtonsEnabledState();
 		}
 		else
 		{
 			Closing += OnMainWindowClosing;
-			_buttonJoinPdfFiles.Content = JoinPdfFilesInProgressButtonText;
+			_joinPdfFilesButton.Content = InProgressJoinPdfFilesButtonText;
 
 			DisableButtons();
 		}
@@ -83,63 +102,121 @@ public partial class MainWindow : Window, IMainView
 		await errorMessageBox.ShowWindowDialogAsync(this);
 	}
 
-	public event EventHandler<AddInputPdfFilesEventArgs>? AddInputPdfFiles;
+	public event EventHandler<AddPdfFilesEventArgs>? AddPdfFiles;
 	public event EventHandler<JoinPdfFilesEventArgs>? JoinPdfFiles;
 
 	#region Private
 
-	private const string JoinPdfFilesDefaultButtonText = "Join PDF files";
-	private const string JoinPdfFilesInProgressButtonText = "Joining PDF files...";
+	private const string DefaultJoinPdfFilesButtonText = "Join PDF files";
+	private const string InProgressJoinPdfFilesButtonText = "Joining PDF files...";
 
 	private static readonly IReadOnlyList<FilePickerFileType> SupportedFileTypes;
+
+	private const HorizontalAlignment DefaultHorizontalAlignment = HorizontalAlignment.Center;
 
 	private static void OnMainWindowClosing(object? sender, WindowClosingEventArgs e)
 	{
 		e.Cancel = true;
 	}
 
-	private void OnClearInputPdfFilesClick(object sender, RoutedEventArgs e)
+	private void OnClearPdfFilesClick(object? sender, RoutedEventArgs e)
 	{
-		SetInitialUiState();
-	}
-
-	private async void OnAddInputPdfFilesClick(object sender, RoutedEventArgs e)
-	{
-		var inputPdfFilesOpenOptions = new FilePickerOpenOptions
-		{
-			AllowMultiple = true,
-			FileTypeFilter = SupportedFileTypes,
-			Title = "Select Input PDF File or Files"
-		};
-
-		var inputPdfStorageFiles = await StorageProvider.OpenFilePickerAsync(
-			inputPdfFilesOpenOptions);
-
-		var inputPdfFilePaths = inputPdfStorageFiles
-			.Select(anInputPdfFile => anInputPdfFile.Path.LocalPath)
-			.ToList();
-
-		var addInputPdfFilesEventArgs = new AddInputPdfFilesEventArgs(inputPdfFilePaths);
-		AddInputPdfFiles?.Invoke(this, addInputPdfFilesEventArgs);
+		var listBoxItems = GetListBoxItems();
+		RemoveListBoxItems(listBoxItems);
 
 		SetButtonsEnabledState();
 	}
 
-	private void OnRemoveInputPdfFilesClick(object sender, RoutedEventArgs e)
+	private async void OnAddPdfFilesClick(object? sender, RoutedEventArgs e)
 	{
-		var selectedItems = _listBoxInputPdfFiles.SelectedItems!
-			.Cast<ListBoxItem>()
-			.ToList();
-
-		foreach (var aSelectedItem in selectedItems)
+		var pdfFilesOpenOptions = new FilePickerOpenOptions
 		{
-			_listBoxInputPdfFiles.Items.Remove(aSelectedItem);
+			AllowMultiple = true,
+			FileTypeFilter = SupportedFileTypes,
+			Title = "Select PDF File or Files"
+		};
+
+		var pdfStorageFiles = await StorageProvider.OpenFilePickerAsync(
+			pdfFilesOpenOptions);
+
+		if (pdfStorageFiles.Any())
+		{
+			var pdfFilePaths = pdfStorageFiles
+				.Select(aPdfFile => aPdfFile.Path.LocalPath)
+				.ToList();
+
+			var addPdfFilesEventArgs = new AddPdfFilesEventArgs(pdfFilePaths);
+			AddPdfFiles?.Invoke(this, addPdfFilesEventArgs);
+
+			UpdatePdfFileItemsReorderFlags();
+			SetButtonsEnabledState();
+		}
+	}
+
+	private void OnRemoveSelectedPdfFilesClick(object? sender, RoutedEventArgs e)
+	{
+		var selectedListBoxItems = GetSelectedListBoxItems();
+		var selectedIndices = _pdfFilesListBox.GetSelectedIndices();
+
+		RemoveListBoxItems(selectedListBoxItems);
+
+		if (HasAnyPdfFiles())
+		{
+			var indexToSelect = selectedIndices.Min() - 1;
+			var normalizedIndexToSelect = indexToSelect >= 0 ? indexToSelect : 0;
+
+			_pdfFilesListBox.SelectedIndex = normalizedIndexToSelect;
+
+			UpdatePdfFileItemsReorderFlags();
 		}
 
 		SetButtonsEnabledState();
 	}
 
-	private async void OnJoinPdfFilesClick(object sender, RoutedEventArgs e)
+	private void OnReorderPdfFiles(object? sender, ReorderFileEventArgs e)
+	{
+		var selectedListBoxItems = GetSelectedListBoxItems();
+		var selectedSingleListBoxItem = selectedListBoxItems.Single();
+
+		var selectedFileItemControl = (IFileItemControl)selectedSingleListBoxItem.Content!;
+		selectedFileItemControl.ReorderFile -= OnReorderPdfFiles;
+
+		IFileItemControl newFileItemControl = new FileItemControl
+		{
+			FileName = selectedFileItemControl.FileName
+		};
+
+		newFileItemControl.ReorderFile += OnReorderPdfFiles;
+
+		var newListBoxItem = new ListBoxItem
+		{
+			Tag = selectedSingleListBoxItem.Tag,
+			Content = newFileItemControl,
+			HorizontalContentAlignment = DefaultHorizontalAlignment
+		};
+
+		var selectedIndex = _pdfFilesListBox.Items.IndexOf(selectedSingleListBoxItem);
+		_pdfFilesListBox.Items.RemoveAt(selectedIndex);
+
+		var reorderType = e.ReorderType;
+
+		switch (reorderType)
+		{
+			case ReorderType.MoveUp:
+				_pdfFilesListBox.Items.Insert(selectedIndex - 1, newListBoxItem);
+				break;
+
+			case ReorderType.MoveDown:
+				_pdfFilesListBox.Items.Insert(selectedIndex + 1, newListBoxItem);
+				break;
+		}
+
+		_pdfFilesListBox.SelectedItem = newListBoxItem;
+
+		UpdatePdfFileItemsReorderFlags();
+	}
+
+	private async void OnJoinPdfFilesClick(object? sender, RoutedEventArgs e)
 	{
 		var outputPdfFileSaveOptions = new FilePickerSaveOptions
 		{
@@ -163,45 +240,98 @@ public partial class MainWindow : Window, IMainView
 		}
 	}
 
-	private void OnListBoxInputPdfFilesSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	private void OnPdfFilesListBoxSelectionChanged(object? sender, SelectionChangedEventArgs e)
 	{
-		_buttonRemoveInputPdfFiles.IsEnabled = HasInputPdfFilesSelected();
-	}
-
-	private void SetInitialUiState()
-	{
-		_listBoxInputPdfFiles.Items.Clear();
-
-		_buttonJoinPdfFiles.Content = JoinPdfFilesDefaultButtonText;
-
-		SetButtonsEnabledState();
+		_removeSelectedPdfFilesButton.IsEnabled = HasPdfFilesSelected();
 	}
 
 	private void SetButtonsEnabledState()
 	{
-		_buttonClearInputPdfFiles.IsEnabled = CanClearInputPdfFiles();
-		_buttonAddInputPdfFiles.IsEnabled = true;
-		_buttonRemoveInputPdfFiles.IsEnabled = HasInputPdfFilesSelected();
-		_buttonJoinPdfFiles.IsEnabled = CanJoinPdfFiles();
+		_clearPdfFilesButton.IsEnabled = HasAnyPdfFiles();
+		_addPdfFilesButton.IsEnabled = true;
+		_removeSelectedPdfFilesButton.IsEnabled = HasPdfFilesSelected();
+		_joinPdfFilesButton.IsEnabled = CanJoinPdfFiles();
 	}
 
 	private void DisableButtons()
 	{
-		_buttonClearInputPdfFiles.IsEnabled = false;
-		_buttonAddInputPdfFiles.IsEnabled = false;
-		_buttonRemoveInputPdfFiles.IsEnabled = false;
-		_buttonJoinPdfFiles.IsEnabled = false;
+		_clearPdfFilesButton.IsEnabled = false;
+		_addPdfFilesButton.IsEnabled = false;
+		_removeSelectedPdfFilesButton.IsEnabled = false;
+		_joinPdfFilesButton.IsEnabled = false;
 	}
 
-	private bool CanClearInputPdfFiles() => _listBoxInputPdfFiles.ItemCount >= 1;
-	private bool CanJoinPdfFiles() => _listBoxInputPdfFiles.ItemCount >= 2;
-	private bool HasInputPdfFilesSelected() => _listBoxInputPdfFiles.SelectedItems!.Count > 0;
+	private bool HasAnyPdfFiles() => _pdfFilesListBox.ItemCount >= 1;
+	private bool CanJoinPdfFiles() => _pdfFilesListBox.ItemCount >= 2;
+	private bool HasPdfFilesSelected() => _pdfFilesListBox.SelectedItems!.Count > 0;
 
-	private IReadOnlyList<PdfFileInfo> GetInputPdfFiles()
-		=> _listBoxInputPdfFiles.Items
-			.Cast<ListBoxItem>()
-			.Select(aListBoxItem => (PdfFileInfo)aListBoxItem.Tag!)
+	private IReadOnlyList<FileInfo> GetInputPdfFiles()
+	{
+		var listBoxItems = GetListBoxItems();
+
+		var inputPdfFiles = listBoxItems
+			.Select(aListBoxItem => (FileInfo)aListBoxItem.Tag!)
 			.ToList();
+
+		return inputPdfFiles;
+	}
+
+	private IReadOnlyList<ListBoxItem> GetListBoxItems()
+		=> _pdfFilesListBox.Items
+			.Cast<ListBoxItem>()
+			.ToList();
+
+	private IReadOnlyList<ListBoxItem> GetSelectedListBoxItems()
+		=> _pdfFilesListBox.SelectedItems!
+			.Cast<ListBoxItem>()
+			.ToList();
+
+	private void RemoveListBoxItems(IReadOnlyList<ListBoxItem> listBoxItems)
+	{
+		var fileItemControls = listBoxItems
+			.Select(aListBoxItem => (IFileItemControl)aListBoxItem.Content!)
+			.ToList();
+
+		foreach (var aFileItemControl in fileItemControls)
+		{
+			aFileItemControl.ReorderFile -= OnReorderPdfFiles;
+		}
+
+		foreach (var aListBoxItem in listBoxItems)
+		{
+			_pdfFilesListBox.Items.Remove(aListBoxItem);
+		}
+	}
+
+	private void UpdatePdfFileItemsReorderFlags()
+	{
+		var listBoxItems = GetListBoxItems();
+
+		var pdfFileItemControls = listBoxItems
+			.Select(aListBoxItem => (IFileItemControl)aListBoxItem.Content!)
+			.ToList();
+
+		var firstPdfIndex = 0;
+		var lastPdfIndex = pdfFileItemControls.Count - 1;
+
+		for (var i = 0; i < pdfFileItemControls.Count; i++)
+		{
+			var aPdfFileItemControl = pdfFileItemControls[i];
+
+			aPdfFileItemControl.CanMoveFileUp = true;
+			aPdfFileItemControl.CanMoveFileDown = true;
+
+			if (i == firstPdfIndex)
+			{
+				aPdfFileItemControl.CanMoveFileUp = false;
+			}
+
+			if (i == lastPdfIndex)
+			{
+				aPdfFileItemControl.CanMoveFileDown = false;
+			}
+		}
+	}
 
 	private static IReadOnlyList<FilePickerFileType> GetSupportedFileTypes()
 	{

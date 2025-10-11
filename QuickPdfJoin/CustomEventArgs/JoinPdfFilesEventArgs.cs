@@ -6,14 +6,12 @@ namespace QuickPdfJoin.CustomEventArgs;
 
 public class JoinPdfFilesEventArgs : EventArgs
 {
-	public JoinPdfFilesEventArgs(
-		IReadOnlyList<PdfFileInfo> inputPdfFiles,
-		string outputPdfFilePath)
+	public JoinPdfFilesEventArgs(IReadOnlyList<FileInfo> inputPdfFiles, string outputPdfFilePath)
 	{
 		InputPdfFiles = inputPdfFiles;
 		OutputPdfFilePath = outputPdfFilePath;
 	}
 
-	public IReadOnlyList<PdfFileInfo> InputPdfFiles { get; }
+	public IReadOnlyList<FileInfo> InputPdfFiles { get; }
 	public string OutputPdfFilePath { get; }
 }

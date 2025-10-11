@@ -16,8 +16,8 @@
 	<description>
 		<p>Features:</p>
 		<ul>
-			<li>adding, removing and clearing of input PDF files</li>
-			<li>multi-selection, when adding PDF files</li>
+			<li>adding, removing, reordering and clearing of PDF files</li>
+			<li>multi-selection, when adding and removing PDF files</li>
 			<li>joining of differently structured PDF files</li>
 			<li>automatic compression of the output PDF file</li>
 		</ul>
@@ -48,6 +48,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/quickpdfjoin/issues</url>
 
 	<releases>
+		<release version="1.2025.10.12" date="2025-10-12">
+			<description>
+				<p>Added PDF files reordering feature</p>
+			</description>
+		</release>
 		<release version="1.2025.07.21" date="2025-07-21">
 			<description>
 				<p>Updated the UI logic</p>

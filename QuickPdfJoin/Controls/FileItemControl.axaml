@@ -1,0 +1,19 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 x:Class="QuickPdfJoin.Controls.FileItemControl">
+	<StackPanel Orientation="Horizontal">
+		<TextBlock Name="_fileNameTextBlock"/>
+
+		<Border Name="_moveFileUpBorder"
+				Classes="FileItem"
+				PointerReleased="OnMoveFileUp">
+			<TextBlock Text="↑"/>
+		</Border>
+
+		<Border Name="_moveFileDownBorder"
+				Classes="FileItem"
+				PointerReleased="OnMoveFileDown">
+			<TextBlock Text="↓"/>
+		</Border>
+	</StackPanel>
+</UserControl>

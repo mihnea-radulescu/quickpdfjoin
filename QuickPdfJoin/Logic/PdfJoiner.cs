@@ -16,7 +16,8 @@ public class PdfJoiner : IPdfJoiner
 
 	public void JoinPdfDocuments(IReadOnlyList<string> inputPdfFiles, string outputPdfFile)
 	{
-		using (var outputPdfDocument = new PdfDocument(new PdfWriter(outputPdfFile, WriterProperties)))
+		using (var outputPdfDocument = new PdfDocument(
+			new PdfWriter(outputPdfFile, WriterProperties)))
 		{
 			var pdfMerger = new PdfMerger(outputPdfDocument);
 

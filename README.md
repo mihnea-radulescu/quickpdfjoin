@@ -4,8 +4,8 @@ Quick PDF Join is a cross-platform, simple application that joins multiple PDF f
 It is written in C#, and targets .NET 8 on Linux and Windows. It relies on [Avalonia](https://github.com/AvaloniaUI/Avalonia), as its UI framework, and on [itext-dotnet](https://github.com/itext/itext-dotnet/), as its PDF editing library.
 
 Features:
-* adding, removing and clearing of input PDF files
-* multi-selection, when adding PDF files
+* adding, removing, reordering and clearing of PDF files
+* multi-selection, when adding and removing PDF files
 * joining of differently structured PDF files
 * automatic compression of the output PDF file
 
