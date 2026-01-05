@@ -11,9 +11,7 @@ namespace QuickPdfJoin;
 
 public class MainPresenter
 {
-	public MainPresenter(
-		IPdfJoiner pdfJoiner,
-		IMainView mainView)
+	public MainPresenter(IPdfJoiner pdfJoiner, IMainView mainView)
 	{
 		_pdfJoiner = pdfJoiner;
 		_mainView = mainView;
@@ -21,8 +19,6 @@ public class MainPresenter
 		_mainView.AddPdfFiles += OnAddPdfFiles;
 		_mainView.JoinPdfFiles += OnJoinPdfFiles;
 	}
-
-	#region Private
 
 	private readonly IPdfJoiner _pdfJoiner;
 	private readonly IMainView _mainView;
@@ -81,12 +77,10 @@ public class MainPresenter
 	private async Task JoinPdfDocuments(IReadOnlyList<string> inputPdfFiles, string outputPdfFile)
 		=> await Task.Run(() => _pdfJoiner.JoinPdfDocuments(inputPdfFiles, outputPdfFile));
 
-	private static string GetFileNameFromPath(string filePath)
-		=> System.IO.Path.GetFileName(filePath);
+	private static string GetFileNameFromPath(string filePath) => System.IO.Path.GetFileName(filePath);
 
-	private static bool HasInputOutputFileCollision(
-		IReadOnlyList<string> inputPdfFilePaths, string outputPdfFilePath) =>
-			inputPdfFilePaths.Contains(outputPdfFilePath, StringComparer.InvariantCultureIgnoreCase);
+	private static bool HasInputOutputFileCollision(IReadOnlyList<string> inputPdfFilePaths, string outputPdfFilePath)
+		=> inputPdfFilePaths.Contains(outputPdfFilePath, StringComparer.InvariantCultureIgnoreCase);
 
 	private static string GetInputOutputFileCollisionErrorMessage(FileInfo outputPdfFile)
 		=> $@"Cannot save output PDF file ""{outputPdfFile.FileName}"", since it would overwrite one of the input PDF files!";
@@ -96,6 +90,4 @@ public class MainPresenter
 
 	private static string GetOutputFileNotSavedErrorMessage(FileInfo outputPdfFile)
 		=> $@"Could not save output PDF file ""{outputPdfFile.FileName}""!";
-
-	#endregion
 }

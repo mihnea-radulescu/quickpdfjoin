@@ -1,6 +1,3 @@
 <Solution>
-	<Folder Name="/">
-		<File Path="Directory.Build.props" />
-	</Folder>
 	<Project Path="QuickPdfJoin/QuickPdfJoin.csproj" />
 </Solution>

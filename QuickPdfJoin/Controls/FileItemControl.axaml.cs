@@ -57,8 +57,6 @@ public partial class FileItemControl : UserControl, IFileItemControl
 
 	public event EventHandler<ReorderFileEventArgs>? ReorderFile;
 
-	#region Private
-
 	private static readonly ReorderFileEventArgs MoveUpFileEventArgs;
 	private static readonly ReorderFileEventArgs MoveDownFileEventArgs;
 
@@ -67,11 +65,6 @@ public partial class FileItemControl : UserControl, IFileItemControl
 	private bool _canMoveFileUp;
 	private bool _canMoveFileDown;
 
-	private void OnMoveFileUp(object? sender, RoutedEventArgs e)
-		=> ReorderFile?.Invoke(this, MoveUpFileEventArgs);
-
-	private void OnMoveFileDown(object? sender, RoutedEventArgs e)
-		=> ReorderFile?.Invoke(this, MoveDownFileEventArgs);
-
-	#endregion
+	private void OnMoveFileUp(object? sender, RoutedEventArgs e) => ReorderFile?.Invoke(this, MoveUpFileEventArgs);
+	private void OnMoveFileDown(object? sender, RoutedEventArgs e) => ReorderFile?.Invoke(this, MoveDownFileEventArgs);
 }

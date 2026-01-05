@@ -16,26 +16,20 @@ public class PdfJoiner : IPdfJoiner
 
 	public void JoinPdfDocuments(IReadOnlyList<string> inputPdfFiles, string outputPdfFile)
 	{
-		using (var outputPdfDocument = new PdfDocument(
-			new PdfWriter(outputPdfFile, WriterProperties)))
+		using var outputPdfWriter = new PdfWriter(outputPdfFile, WriterProperties);
+		using var outputPdfDocument = new PdfDocument(outputPdfWriter);
+
+		var outputPdfMerger = new PdfMerger(outputPdfDocument);
+
+		foreach (var anInputPdfFile in inputPdfFiles)
 		{
-			var pdfMerger = new PdfMerger(outputPdfDocument);
+			using var anInputPdfReader = new PdfReader(anInputPdfFile);
+			using var anInputPdfDocument = new PdfDocument(anInputPdfReader);
 
-			foreach (var anInputPdfFile in inputPdfFiles)
-			{
-				using (var anInputPdfDocument = new PdfDocument(new PdfReader(anInputPdfFile)))
-				{
-					var anInputPdfDocumentPageCount = anInputPdfDocument.GetNumberOfPages();
-
-					pdfMerger.Merge(anInputPdfDocument, 1, anInputPdfDocumentPageCount);
-				}
-			}
+			var anInputPdfDocumentPageCount = anInputPdfDocument.GetNumberOfPages();
+			outputPdfMerger.Merge(anInputPdfDocument, 1, anInputPdfDocumentPageCount);
 		}
 	}
 
-	#region Private
-
 	private static readonly WriterProperties WriterProperties;
-
-	#endregion
 }

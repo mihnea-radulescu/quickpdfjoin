@@ -31,7 +31,7 @@ public partial class MainWindow : Window, IMainView
 
 	public void PopulatePdfFiles(IReadOnlyList<FileInfo> pdfFiles)
 	{
-		var firstPdfIndex = 0;
+		const int firstPdfIndex = 0;
 
 		for (var i = 0; i < pdfFiles.Count; i++)
 		{
@@ -85,6 +85,7 @@ public partial class MainWindow : Window, IMainView
 			successMessage,
 			MsBox.Avalonia.Enums.ButtonEnum.Ok,
 			MsBox.Avalonia.Enums.Icon.Success,
+			null,
 			WindowStartupLocation.CenterOwner);
 
 		await successMessageBox.ShowWindowDialogAsync(this);
@@ -97,6 +98,7 @@ public partial class MainWindow : Window, IMainView
 			errorMessage,
 			MsBox.Avalonia.Enums.ButtonEnum.Ok,
 			MsBox.Avalonia.Enums.Icon.Error,
+			null,
 			WindowStartupLocation.CenterOwner);
 
 		await errorMessageBox.ShowWindowDialogAsync(this);
@@ -104,8 +106,6 @@ public partial class MainWindow : Window, IMainView
 
 	public event EventHandler<AddPdfFilesEventArgs>? AddPdfFiles;
 	public event EventHandler<JoinPdfFilesEventArgs>? JoinPdfFiles;
-
-	#region Private
 
 	private const string DefaultJoinPdfFilesButtonText = "Join PDF files";
 	private const string InProgressJoinPdfFilesButtonText = "Joining PDF files...";
@@ -136,8 +136,7 @@ public partial class MainWindow : Window, IMainView
 			Title = "Select PDF File or Files"
 		};
 
-		var pdfStorageFiles = await StorageProvider.OpenFilePickerAsync(
-			pdfFilesOpenOptions);
+		var pdfStorageFiles = await StorageProvider.OpenFilePickerAsync(pdfFilesOpenOptions);
 
 		if (pdfStorageFiles.Any())
 		{
@@ -227,8 +226,7 @@ public partial class MainWindow : Window, IMainView
 			Title = "Select Output PDF File"
 		};
 
-		var outputPdfStorageFile = await StorageProvider.SaveFilePickerAsync(
-			outputPdfFileSaveOptions);
+		var outputPdfStorageFile = await StorageProvider.SaveFilePickerAsync(outputPdfFileSaveOptions);
 
 		if (outputPdfStorageFile is not null)
 		{
@@ -311,7 +309,7 @@ public partial class MainWindow : Window, IMainView
 			.Select(aListBoxItem => (IFileItemControl)aListBoxItem.Content!)
 			.ToList();
 
-		var firstPdfIndex = 0;
+		const int firstPdfIndex = 0;
 		var lastPdfIndex = pdfFileItemControls.Count - 1;
 
 		for (var i = 0; i < pdfFileItemControls.Count; i++)
@@ -337,7 +335,7 @@ public partial class MainWindow : Window, IMainView
 	{
 		var supportedFileTypes = new List<FilePickerFileType>
 		{
-			new FilePickerFileType("PDF files")
+			new("PDF files")
 			{
 				Patterns = ["*.pdf", "*.PDF"]
 			}
@@ -345,6 +343,4 @@ public partial class MainWindow : Window, IMainView
 
 		return supportedFileTypes;
 	}
-
-	#endregion
 }
