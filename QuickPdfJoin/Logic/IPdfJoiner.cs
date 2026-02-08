@@ -4,5 +4,6 @@ namespace QuickPdfJoin.Logic;
 
 public interface IPdfJoiner
 {
-	void JoinPdfDocuments(IReadOnlyList<string> inputPdfFiles, string outputPdfFile);
+	void JoinPdfDocuments(
+		IReadOnlyList<string> inputPdfFiles, string outputPdfFile);
 }

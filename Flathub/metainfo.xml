@@ -14,6 +14,7 @@
 	<project_license>GPL-3.0-or-later</project_license>
 
 	<description>
+		<p>Quick PDF Join is a fast and easy-to-use PDF merging application.</p>
 		<p>Features:</p>
 		<ul>
 			<li>adding, removing, reordering and clearing of PDF files</li>
@@ -38,9 +39,11 @@
 	<screenshots>
 		<screenshot type="default">
 			<image>https://raw.githubusercontent.com/mihnea-radulescu/quickpdfjoin/main/Screenshot-Dark.jpg</image>
+			<caption>Main view - dark mode</caption>
 		</screenshot>
 		<screenshot>
 			<image>https://raw.githubusercontent.com/mihnea-radulescu/quickpdfjoin/main/Screenshot-Light.jpg</image>
+			<caption>Main view - light mode</caption>
 		</screenshot>
 	</screenshots>
 
@@ -48,6 +51,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/quickpdfjoin/issues</url>
 
 	<releases>
+		<release version="1.2026.02.09" date="2026-02-09">
+			<description>
+				<p>Updated application framework and libraries</p>
+			</description>
+		</release>
 		<release version="1.2025.11.14" date="2025-11-14">
 			<description>
 				<p>Updated framework and libraries</p>

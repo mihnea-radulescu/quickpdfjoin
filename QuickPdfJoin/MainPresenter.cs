@@ -28,7 +28,9 @@ public class MainPresenter
 		var pdfFilePaths = e.PdfFilePaths;
 
 		var pdfFiles = pdfFilePaths
-			.Select(aPdfFilePath => new FileInfo(GetFileNameFromPath(aPdfFilePath), aPdfFilePath))
+			.Select(aPdfFilePath
+						=> new FileInfo(
+							GetFileNameFromPath(aPdfFilePath), aPdfFilePath))
 			.ToList();
 
 		_mainView.PopulatePdfFiles(pdfFiles);
@@ -48,7 +50,8 @@ public class MainPresenter
 
 		if (HasInputOutputFileCollision(inputPdfFilePaths, outputPdfFilePath))
 		{
-			var errorMessage = GetInputOutputFileCollisionErrorMessage(outputPdfFile);
+			var errorMessage = GetInputOutputFileCollisionErrorMessage(
+				outputPdfFile);
 			await _mainView.ShowErrorMessage(errorMessage);
 		}
 		else
@@ -59,12 +62,14 @@ public class MainPresenter
 
 				await JoinPdfDocuments(inputPdfFilePaths, outputPdfFilePath);
 
-				var successMessage = GetOutputFileSavedSuccessMessage(outputPdfFile);
+				var successMessage = GetOutputFileSavedSuccessMessage(
+					outputPdfFile);
 				await _mainView.ShowSuccessMessage(successMessage);
 			}
 			catch
 			{
-				var errorMessage = GetOutputFileNotSavedErrorMessage(outputPdfFile);
+				var errorMessage = GetOutputFileNotSavedErrorMessage(
+					outputPdfFile);
 				await _mainView.ShowErrorMessage(errorMessage);
 			}
 			finally
@@ -74,20 +79,28 @@ public class MainPresenter
 		}
 	}
 
-	private async Task JoinPdfDocuments(IReadOnlyList<string> inputPdfFiles, string outputPdfFile)
-		=> await Task.Run(() => _pdfJoiner.JoinPdfDocuments(inputPdfFiles, outputPdfFile));
+	private async Task JoinPdfDocuments(
+		IReadOnlyList<string> inputPdfFiles, string outputPdfFile)
+		=> await Task.Run(()
+				=> _pdfJoiner.JoinPdfDocuments(inputPdfFiles, outputPdfFile));
 
-	private static string GetFileNameFromPath(string filePath) => System.IO.Path.GetFileName(filePath);
+	private static string GetFileNameFromPath(string filePath)
+		=> System.IO.Path.GetFileName(filePath);
 
-	private static bool HasInputOutputFileCollision(IReadOnlyList<string> inputPdfFilePaths, string outputPdfFilePath)
-		=> inputPdfFilePaths.Contains(outputPdfFilePath, StringComparer.InvariantCultureIgnoreCase);
+	private static bool HasInputOutputFileCollision(
+		IReadOnlyList<string> inputPdfFilePaths, string outputPdfFilePath)
+			=> inputPdfFilePaths.Contains(
+				outputPdfFilePath, StringComparer.InvariantCultureIgnoreCase);
 
-	private static string GetInputOutputFileCollisionErrorMessage(FileInfo outputPdfFile)
-		=> $@"Cannot save output PDF file ""{outputPdfFile.FileName}"", since it would overwrite one of the input PDF files!";
+	private static string GetInputOutputFileCollisionErrorMessage(
+		FileInfo outputPdfFile)
+			=> $@"Cannot save output PDF file ""{outputPdfFile.FileName}"", since it would overwrite one of the input PDF files!";
 
-	private static string GetOutputFileSavedSuccessMessage(FileInfo outputPdfFile)
-		=> $@"Output PDF file ""{outputPdfFile.FileName}"" has been successfully saved.";
+	private static string GetOutputFileSavedSuccessMessage(
+		FileInfo outputPdfFile)
+			=> $@"Output PDF file ""{outputPdfFile.FileName}"" has been successfully saved.";
 
-	private static string GetOutputFileNotSavedErrorMessage(FileInfo outputPdfFile)
-		=> $@"Could not save output PDF file ""{outputPdfFile.FileName}""!";
+	private static string GetOutputFileNotSavedErrorMessage(
+		FileInfo outputPdfFile)
+			=> $@"Could not save output PDF file ""{outputPdfFile.FileName}""!";
 }
