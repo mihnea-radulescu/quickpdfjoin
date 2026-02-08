@@ -7,7 +7,9 @@
 	<name>Quick PDF Join</name>
 	<summary>Simple application that joins multiple PDF files together</summary>
 
-	<developer_name>Mihnea Rădulescu</developer_name>
+	<developer id="io.github.mihnea_radulescu">
+		<name>Mihnea Rădulescu</name>
+	</developer>
 	<content_rating type="oars-1.1" />
 
 	<metadata_license>CC0-1.0</metadata_license>
@@ -24,16 +26,6 @@
 		</ul>
 	</description>
 
-	<categories>
-		<category>Utility</category>
-	</categories>
-
-	<keywords>
-		<keyword>PDF</keyword>
-		<keyword>PDF join</keyword>
-		<keyword>PDF merge</keyword>
-	</keywords>
-
 	<launchable type="desktop-id">io.github.mihnea_radulescu.quickpdfjoin.desktop</launchable>
 
 	<screenshots>
@@ -49,6 +41,7 @@
 
 	<url type="homepage">https://github.com/mihnea-radulescu/quickpdfjoin</url>
 	<url type="bugtracker">https://github.com/mihnea-radulescu/quickpdfjoin/issues</url>
+	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
 		<release version="1.2026.02.09" date="2026-02-09">
