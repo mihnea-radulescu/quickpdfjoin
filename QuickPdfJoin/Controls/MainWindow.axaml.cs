@@ -6,7 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Platform.Storage;
-using MsBox.Avalonia;
+using QuickPdfJoin.Controls.MessageBoxControl;
 using QuickPdfJoin.CustomEventArgs;
 using QuickPdfJoin.DataTypes;
 using QuickPdfJoin.Extensions;
@@ -80,28 +80,20 @@ public partial class MainWindow : Window, IMainView
 
 	public async Task ShowSuccessMessage(string successMessage)
 	{
-		var successMessageBox = MessageBoxManager.GetMessageBoxStandard(
+		await MessageBoxManager.ShowAsync(
 			"Output PDF File Successfully Saved",
 			successMessage,
-			MsBox.Avalonia.Enums.ButtonEnum.Ok,
-			MsBox.Avalonia.Enums.Icon.Success,
-			null,
-			WindowStartupLocation.CenterOwner);
-
-		await successMessageBox.ShowWindowDialogAsync(this);
+			MessageBoxType.Info,
+			this);
 	}
 
 	public async Task ShowErrorMessage(string errorMessage)
 	{
-		var errorMessageBox = MessageBoxManager.GetMessageBoxStandard(
+		await MessageBoxManager.ShowAsync(
 			"Output PDF File Save Error",
 			errorMessage,
-			MsBox.Avalonia.Enums.ButtonEnum.Ok,
-			MsBox.Avalonia.Enums.Icon.Error,
-			null,
-			WindowStartupLocation.CenterOwner);
-
-		await errorMessageBox.ShowWindowDialogAsync(this);
+			MessageBoxType.Error,
+			this);
 	}
 
 	public event EventHandler<AddPdfFilesEventArgs>? AddPdfFiles;
