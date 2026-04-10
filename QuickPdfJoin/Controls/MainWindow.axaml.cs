@@ -80,7 +80,7 @@ public partial class MainWindow : Window, IMainView
 
 	public async Task ShowSuccessMessage(string successMessage)
 	{
-		await MessageBoxManager.ShowAsync(
+		await MessageBoxManager.ShowDialogAsync(
 			"Output PDF File Successfully Saved",
 			successMessage,
 			MessageBoxType.Info,
@@ -89,7 +89,7 @@ public partial class MainWindow : Window, IMainView
 
 	public async Task ShowErrorMessage(string errorMessage)
 	{
-		await MessageBoxManager.ShowAsync(
+		await MessageBoxManager.ShowDialogAsync(
 			"Output PDF File Save Error",
 			errorMessage,
 			MessageBoxType.Error,
